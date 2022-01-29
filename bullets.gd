@@ -8,7 +8,7 @@ const BULLET_COUNT = 500
 const SPEED_MIN = 20
 const SPEED_MAX = 80
 
-var camera: Camera2D = get_parent()
+onready var camera: Camera2D = get_node("Camera2D")
 
 const bullet_image = preload("res://bullet.png")
 
@@ -17,7 +17,7 @@ var shape
 
 
 class Bullet:
-	var position = Vector2(0, 0)
+	var position
 	var speed = 1.0
 	# The body is stored as a RID, which is an "opaque" way to access resources.
 	# With large amounts of objects (thousands or more), it can be significantly
@@ -48,7 +48,7 @@ func _ready():
 		# bullets to detect collisions with the player.
 		Physics2DServer.body_set_collision_layer(bullet.body, 0)
 		
-		camera = get_parent()
+		#camera = get_child()
 		
 		
 		# bullet.position = camera.get_camera_screen_center()
@@ -59,6 +59,11 @@ func _ready():
 			# get_viewport_rect().size.y/2
 		
 		# )
+		#The bullet will be spawned at the center
+		bullet.position = Vector2(0,0)
+
+
+
 		var transform2d = Transform2D()
 		transform2d.origin = bullet.position
 		Physics2DServer.body_set_state(bullet.body, Physics2DServer.BODY_STATE_TRANSFORM, transform2d)
@@ -73,20 +78,17 @@ func _process(_delta):
 
 func _physics_process(delta):
 	var transform2d = Transform2D()
-	var offset = get_viewport_rect().size.x + 16
+	
 	for bullet in bullets:
 		bullet.position.x -= bullet.speed * delta * cos(bullet.angle)
 		bullet.position.y -= bullet.speed * delta * sin(bullet.angle)
-
-		if bullet.position.x < -16 || bullet.position.x > get_viewport_rect().size.x + 16:
-			# The bullet has left the screen; move it back to the right.
-			bullet.position.x = get_viewport_rect().size.x/2
-			bullet.position.y = get_viewport_rect().size.y/2
-		if bullet.position.y < -16 || bullet.position.y > get_viewport_rect().size.y + 16:
-			# The bullet has left the screen; move it back to the right.
-			bullet.position.x = get_viewport_rect().size.x/2
-			bullet.position.y = get_viewport_rect().size.y/2
-
+		
+		if bullet.position.x < -camera.get_camera_position().x || bullet.position.x > camera.get_camera_position().x:
+			#Bullet has left screen in X direction, send to center
+			bullet.position = Vector2(0,0)
+		if bullet.position.y < -camera.get_camera_position().y || bullet.position.y > camera.get_camera_position().y:
+			# The bullet has left the screen in Y direction; move it to center
+			bullet.position = Vector2(0,0)
 		transform2d.origin = bullet.position
 
 		Physics2DServer.body_set_state(bullet.body, Physics2DServer.BODY_STATE_TRANSFORM, transform2d)

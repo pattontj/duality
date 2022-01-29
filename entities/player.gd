@@ -31,11 +31,11 @@ func _physics_process(delta):
 	
 	if sign(cos(rot)) >= 0 and no_angular_movement():
 		direction = 1
-		print("normal")
+		#print("normal")
 	
 	if sign(cos(rot)) == -1 and no_angular_movement():
 		direction = -1
-		print("inverted")
+		#print("inverted")
 
 	
 	# TODO: input kinda janky

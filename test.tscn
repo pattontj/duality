@@ -5,13 +5,13 @@
 
 [node name="Node2D" type="Node2D"]
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2( 959, 539 )
-current = true
-
-[node name="Bullets" type="Node2D" parent="Camera2D"]
-position = Vector2( 1, -4 )
+[node name="Bullets" type="Node2D" parent="."]
+position = Vector2( 960, 535 )
 script = ExtResource( 2 )
+
+[node name="Camera2D" type="Camera2D" parent="Bullets"]
+position = Vector2( -1, 4 )
+current = true
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
 position = Vector2( 961, 539 )
