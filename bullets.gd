@@ -8,7 +8,7 @@ const BULLET_COUNT = 500
 const SPEED_MIN = 20
 const SPEED_MAX = 80
 
-onready var camera: Camera2D = get_node("Camera2D")
+onready var camera: Camera2D = get_parent()
 
 const bullet_image = preload("res://bullet.png")
 
@@ -49,6 +49,7 @@ func _ready():
 		# Their collision mask is still configured to the default value, which allows
 		# bullets to detect collisions with the player.
 		Physics2DServer.body_set_collision_layer(bullet.body, 0)
+		Physics2DServer.body_set_collision_mask(bullet.body, 1)
 		
 		#camera = get_child()
 		

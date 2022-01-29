@@ -1,0 +1,56 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://player.gd" type="Script" id=1]
+[ext_resource path="res://sprite/player_light_forward.png" type="Texture" id=2]
+
+[sub_resource type="AtlasTexture" id=1]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 64, 88 )
+
+[sub_resource type="AtlasTexture" id=2]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 64, 0, 64, 88 )
+
+[sub_resource type="AtlasTexture" id=3]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 128, 0, 64, 88 )
+
+[sub_resource type="AtlasTexture" id=4]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 192, 0, 64, 88 )
+
+[sub_resource type="SpriteFrames" id=5]
+animations = [ {
+"frames": [  ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 4 ) ],
+"loop": true,
+"name": "light",
+"speed": 8.0
+} ]
+
+[node name="Area2D" type="Area2D"]
+position = Vector2( 1, -4 )
+script = ExtResource( 1 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+position = Vector2( 0.222473, 183.9 )
+scale = Vector2( 0.444915, 1.09939 )
+polygon = PoolVector2Array( -29, -31, 29, -31, 29, 29, -30, 30 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0, 179 )
+frames = SubResource( 5 )
+animation = "light"
+frame = 2
+playing = true
+
+[connection signal="body_shape_entered" from="." to="." method="_on_Area2D_body_shape_entered"]
+[connection signal="body_shape_exited" from="." to="." method="_on_Area2D_body_shape_exited"]
