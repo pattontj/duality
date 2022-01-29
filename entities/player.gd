@@ -27,27 +27,6 @@ func _physics_process(delta):
 	
 	var rot = get_parent().rotation
 	
-	
-	#from PI/2 to 3PI/2
-	
-	# and no_angular_movement()
-	
-#	if cos(rot) >= 0:
-#		if no_angular_movement():
-#			direction = -1
-#		else:
-#			direction = 1
-#	
-#	if cos(rot) < 0:
-#		if no_angular_movement():
-#			direction = 1
-#		else:
-#			direction = -1
-	
-	print(sign(cos(rot)))
-	
-	
-		
 	if sign(cos(rot)) >= 0 and no_angular_movement():
 		direction = 1
 		print("normal")
@@ -57,7 +36,7 @@ func _physics_process(delta):
 		print("inverted")
 
 	
-	# TODO: Fix inversion not working
+	# TODO: input kinda janky
 	if Input.is_key_pressed(KEY_LEFT):
 		get_parent().rotate(direction * rotation_speed * delta)
 		
@@ -68,15 +47,13 @@ func _physics_process(delta):
 		self.velocity += Vector2(0, -rotation_speed);
 		
 	if Input.is_key_pressed(KEY_DOWN):
-		self.velocity += Vector2(0, rotation_speed);
-	
-
 		
+		dist_from_center -= rotation_speed
 	
 	
 	velocity.normalized() * rotation_speed
 	
-	self.position = velocity
+	self.position.y = dist_from_center
 	# position = rotate_point + (position-rotate_point).rotated(rotate_angle)
 	# global_position = rotate_point
 	# global_position += (Vector2( cos(rotate_angle), sin(rotate_angle) ) * dist_from_center) * delta

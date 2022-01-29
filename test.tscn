@@ -6,3 +6,5 @@
 
 [node name="Player" parent="." instance=ExtResource( 1 )]
 position = Vector2( 503, 274 )
+
+[node name="Player2" parent="." instance=ExtResource( 1 )]
