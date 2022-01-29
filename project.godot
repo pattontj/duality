@@ -54,6 +54,12 @@ config/name="duality"
 run/main_scene="res://test.tscn"
 config/icon="res://icon.png"
 
+[display]
+
+window/size/width=1920
+window/size/height=1080
+window/stretch/mode="viewport"
+
 [editor_plugins]
 
 enabled=PoolStringArray(  )

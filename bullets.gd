@@ -8,6 +8,8 @@ const BULLET_COUNT = 500
 const SPEED_MIN = 20
 const SPEED_MAX = 80
 
+var camera: Camera2D = get_parent()
+
 const bullet_image = preload("res://bullet.png")
 
 var bullets = []
@@ -15,14 +17,14 @@ var shape
 
 
 class Bullet:
-	var position = Vector2()
+	var position = Vector2(0, 0)
 	var speed = 1.0
 	# The body is stored as a RID, which is an "opaque" way to access resources.
 	# With large amounts of objects (thousands or more), it can be significantly
 	# faster to use RIDs compared to a high-level approach.
 	var body = RID()
 	var angle = 0.0
-
+	
 
 func _ready():
 	randomize()
@@ -45,14 +47,18 @@ func _ready():
 		# Their collision mask is still configured to the default value, which allows
 		# bullets to detect collisions with the player.
 		Physics2DServer.body_set_collision_layer(bullet.body, 0)
-
+		
+		camera = get_parent()
+		
+		
+		# bullet.position = camera.get_camera_screen_center()
 		# Place bullets randomly on the viewport and move bullets outside the
 		# play area so that they fade in nicely.
-		bullet.position = Vector2(
-			get_viewport_rect().size.x/2,
-			get_viewport_rect().size.y/2
+		# bullet.position = Vector2(0 ,0
+			# get_viewport_rect().size.x/2,
+			# get_viewport_rect().size.y/2
 		
-		)
+		# )
 		var transform2d = Transform2D()
 		transform2d.origin = bullet.position
 		Physics2DServer.body_set_state(bullet.body, Physics2DServer.BODY_STATE_TRANSFORM, transform2d)

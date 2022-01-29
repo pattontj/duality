@@ -4,7 +4,7 @@ extends KinematicBody2D
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
-export var rotate_point = Vector2(200,200)
+export var rotate_point = Vector2(0,0)
 export var rotate_angle: float
 export var rotation_speed = 2.0
 var dist_from_center = 100
@@ -12,6 +12,8 @@ var dist_from_center = 100
 var velocity = Vector2()
  
 var direction;
+
+#get_viewport().size.x
 
 
 # Called when the node enters the scene tree for the first time.
@@ -49,7 +51,7 @@ func _physics_process(delta):
 			dist_from_center -= rotation_speed
 		
 	if Input.is_key_pressed(KEY_DOWN):
-		dist_from_center -= rotation_speed
+		dist_from_center += rotation_speed
 
 	
 	
