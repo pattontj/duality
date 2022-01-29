@@ -22,8 +22,8 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func _process(delta):
+	pass
 
 func _physics_process(delta):
 	
@@ -55,7 +55,7 @@ func _physics_process(delta):
 
 	
 	
-
+	get_node("AnimatedSprite").rotation = -rot
 	
 	self.position.y = dist_from_center
 	# position = rotate_point + (position-rotate_point).rotated(rotate_angle)

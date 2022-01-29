@@ -25,6 +25,8 @@ class Bullet:
 	var body = RID()
 	var angle = 0.0
 	
+	var k_body: KinematicBody2D
+	
 
 func _ready():
 	randomize()
