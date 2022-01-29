@@ -44,11 +44,12 @@ func _physics_process(delta):
 		get_parent().rotate(-direction * rotation_speed * delta)
 		
 	if Input.is_key_pressed(KEY_UP):
-		self.velocity += Vector2(0, -rotation_speed);
+		if not dist_from_center < 75:
+			dist_from_center -= rotation_speed
 		
 	if Input.is_key_pressed(KEY_DOWN):
 		
-		dist_from_center -= rotation_speed
+		dist_from_center += rotation_speed
 	
 	
 	velocity.normalized() * rotation_speed
