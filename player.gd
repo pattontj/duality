@@ -7,6 +7,7 @@ export var rotation_speed = 2.0
 var dist_from_center = 100
 
 
+onready var _animated_sprite = $AnimatedSprite
 var velocity = Vector2()
  
 var direction
@@ -28,12 +29,17 @@ func _physics_process(delta):
 	
 	var rot = self.rotation
 	var rotation_speed_local = rotation_speed
-	if self.position.angle() >= 0 and no_angular_movement():
-		direction = 1
+	if self.position.angle() >= 0:
+		_animated_sprite.play("dark")
+		if no_angular_movement():
+			direction = 1
+		
 		#print("normal")
 	
-	if self.position.angle() < 0 and no_angular_movement():
-		direction = -1
+	if self.position.angle() < 0:
+		_animated_sprite.play("light")
+		if no_angular_movement():
+			direction = -1
 		#print("inverted")
 
 	if Input.is_key_pressed(KEY_SHIFT):
