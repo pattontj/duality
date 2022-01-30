@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://player.gd" type="Script" id=1]
 [ext_resource path="res://bullets.gd" type="Script" id=2]
 [ext_resource path="res://sprite/player_light_forward.png" type="Texture" id=3]
 [ext_resource path="res://BulletBounds.gd" type="Script" id=4]
+[ext_resource path="res://sprite/player_dark_forward.png" type="Texture" id=5]
 
 [sub_resource type="AtlasTexture" id=1]
 flags = 4
@@ -25,6 +26,26 @@ flags = 4
 atlas = ExtResource( 3 )
 region = Rect2( 192, 0, 64, 88 )
 
+[sub_resource type="AtlasTexture" id=8]
+flags = 4
+atlas = ExtResource( 5 )
+region = Rect2( 0, 0, 64, 88 )
+
+[sub_resource type="AtlasTexture" id=9]
+flags = 4
+atlas = ExtResource( 5 )
+region = Rect2( 64, 0, 64, 88 )
+
+[sub_resource type="AtlasTexture" id=10]
+flags = 4
+atlas = ExtResource( 5 )
+region = Rect2( 128, 0, 64, 88 )
+
+[sub_resource type="AtlasTexture" id=11]
+flags = 4
+atlas = ExtResource( 5 )
+region = Rect2( 192, 0, 64, 88 )
+
 [sub_resource type="SpriteFrames" id=5]
 animations = [ {
 "frames": [  ],
@@ -36,11 +57,16 @@ animations = [ {
 "loop": true,
 "name": "light",
 "speed": 8.0
+}, {
+"frames": [ SubResource( 8 ), SubResource( 9 ), SubResource( 10 ), SubResource( 11 ) ],
+"loop": true,
+"name": "dark",
+"speed": 5.0
 } ]
 
 [sub_resource type="CapsuleShape2D" id=6]
 radius = 11.0
-height = 44.0
+height = 2.0
 
 [sub_resource type="RectangleShape2D" id=7]
 extents = Vector2( 964, 540 )
@@ -63,7 +89,7 @@ frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/Area2D"]
-position = Vector2( 0, 2 )
+position = Vector2( 0, -19 )
 shape = SubResource( 6 )
 
 [node name="Bullets" type="Node2D" parent="Camera2D"]
