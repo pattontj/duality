@@ -49,8 +49,8 @@ func _physics_process(delta):
 		#print("normal")
 	
 	if self.position.angle() < 0:
-		_animated_sprite.play("light")
-		
+		if game.current_colour != game.light_colour:
+			game.switch_colours()
 		if no_angular_movement():
 			vert_direction = -1
 		#print("inverted")

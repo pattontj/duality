@@ -9,7 +9,7 @@ var current_colour = light_colour
 
 
 func _ready():
-	VisualServer.set_default_clear_color(light_colour)
+	#VisualServer.set_default_clear_color(light_colour)
 	pass
 
 
@@ -27,13 +27,17 @@ func switch_colours():
 
 
 func switch_background_colour(current):
-	pass
+	VisualServer.set_default_clear_color(current)
+
 	
 func switch_bullets_colour(current):
 	pass
 	
 func switch_player_colour(current):
-	get_node("Camera2D/Area2D")._animated_sprite.play("dark")
+	if current == light_colour:
+		get_node("Camera2D/Area2D")._animated_sprite.play("light")
+	elif current == dark_colour:
+		get_node("Camera2D/Area2D")._animated_sprite.play("dark")
 
 
 
