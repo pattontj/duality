@@ -15,8 +15,6 @@ const bullet_image = preload("res://bullet.png")
 var bullets = []
 var shape
 
-var root_position = null
-var bounds_extents = null
 
 class Bullet:
 	var position
@@ -30,14 +28,14 @@ class Bullet:
 
 func _ready():
 	randomize()
-	print("camera pos", camera.get_camera_position())
-	print("camera center pos", camera.get_camera_screen_center())
-	print("viewport size:", get_viewport().size)
+	#print("camera pos", camera.get_camera_position())
+	#print("camera center pos", camera.get_camera_screen_center())
+	#print("viewport size:", get_viewport().size)
 
 	
 
 	var screen_coord = get_viewport_transform() * (get_global_transform() * Vector2(100, 0))
-	print(screen_coord)
+	#print(screen_coord)
 
 
 	shape = Physics2DServer.circle_shape_create()
@@ -98,20 +96,16 @@ func _process(_delta):
 
 
 func _physics_process(delta):
-	
 
-	if root_position == null:
-		root_position = get_owner().transform
-		print(root_position)
-		
-	if bounds_extents == null:
-		var box_shape: RectangleShape2D = get_node("BulletBounds/CollisionShape2D").get_shape()
-		bounds_extents = shape.get_extents()
-	
-	
-	
 	var transform2d = Transform2D()
 	
+	
+	var root_position = get_owner().transform
+	var box_shape: RectangleShape2D = get_node("BulletBounds/CollisionShape2D").get_shape()
+	#var bounds_extents_x: Vector2 = shape.get_extents().x
+	#var bounds_extents_y: Vector2 = shape.get_extents().y
+	#print(root_position)
+	#print(box_shape.get_extents())
 	
 	for bullet in bullets:
 		bullet.position.x -= bullet.speed * delta * cos(bullet.angle)
@@ -123,12 +117,13 @@ func _physics_process(delta):
 
 #		root_position 
 #		bounds_extents
+
+
+		if bullet.position.x < -960 || bullet.position.x >  964:
+			bullet.position = Vector2(0, 0)
 		
-		if bullet.position.x < root_position.x || bullet.position.x > root_position.x+bounds_extents.x:
-			pass
-		
-		if bullet.position.y < root_position.y || bullet.position.y > root_position.x+bounds_extents.y:
-			pass
+		if bullet.position.y < -539 || bullet.position.y >  540:
+			bullet.position = Vector2(0, 0)
 	
 	#	if not get_node("BulletBounds").overlaps_areas(bullet):
 	#		bullet.position = Vector2(0,0)
