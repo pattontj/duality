@@ -96,7 +96,7 @@ margin_left = -960.0
 margin_top = -539.0
 margin_right = -920.0
 margin_bottom = -499.0
-text = "HP"
+bbcode_enabled = true
 script = ExtResource( 7 )
 __meta__ = {
 "_edit_use_anchors_": false

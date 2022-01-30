@@ -8,11 +8,17 @@ var current_colour = light_colour
 var hp = 100
 onready var background = $ColorRect
 onready var fade_out  =  $FadeOut
+onready var hp_label = $Camera2D/RichTextLabel
 
 func _ready():
 	background.color = current_colour
 	fade_out.color = current_colour
 	fade_out.visible = false
+	
+	hp_label.push_color(dark_colour)
+	hp_label.append_bbcode(str("hp: ", hp))
+	hp_label.pop()
+#	hp_label.set_bbcode("[color=#"+dark_colour.to_html(false)+str("HP: ", hp)+ "[/color]")
 
 func switch_colours():
 	if current_colour == light_colour:
@@ -20,11 +26,13 @@ func switch_colours():
 		switch_bullets_colour(current_colour)
 		switch_player_colour(current_colour)
 		switch_background_colour(current_colour)
+		#switch_label_colour(current_colour)
 	elif current_colour == dark_colour:
 		current_colour = light_colour
 		switch_bullets_colour(current_colour)
 		switch_player_colour(current_colour)
 		switch_background_colour(current_colour)
+		#switch_label_colour(current_colour)
 
 	else:
 		null.test()
@@ -52,6 +60,16 @@ func switch_player_colour(current):
 		get_node("Camera2D/Area2D")._animated_sprite.play("dark")
 
 
+func switch_label_colour(current):
+	if current == light_colour:
+		hp_label.push_color(dark_colour)
+		hp_label.pop()
+		
+	elif current == dark_colour:
+
+		hp_label.push_color(light_colour)
+		hp_label.pop()
+		#hp_label.set_bbcode("[color=#"+light_colour.to_html(false)+str("HP: ", hp) + "[/color]")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
