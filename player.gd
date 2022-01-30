@@ -33,8 +33,16 @@ func _physics_process(delta):
 	var rotation_speed_local = rotation_speed
 	var distance_speed_local = distance_speed
 	
+	#VisualServer.set_default_clear_color(Color(0.4,0.4,0.4,1.0))
+	
+	
+	var game = get_owner()
+	
 	if self.position.angle() >= 0:
-		_animated_sprite.play("dark")
+		if game.current_colour != game.dark_colour:
+			game.switch_colours();
+#		_animated_sprite.play("dark")
+#		VisualServer.set_default_clear_color(Color(1, 1, 1, 1))
 		if no_angular_movement():
 			vert_direction = 1
 		
@@ -42,6 +50,7 @@ func _physics_process(delta):
 	
 	if self.position.angle() < 0:
 		_animated_sprite.play("light")
+		
 		if no_angular_movement():
 			vert_direction = -1
 		#print("inverted")
