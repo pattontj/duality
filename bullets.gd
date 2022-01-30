@@ -10,11 +10,19 @@ const SPEED_MAX = 80
 
 onready var camera: Camera2D = get_parent()
 
+const moon = preload("res://sprite/moon.png")
+const sun =  preload("res://sprite/sun.png")
+
 const bullet_image = preload("res://bullet.png")
+const light_bullet = preload("res://sprite/bullet_light.png")
+const dark_bullet  = preload("res://sprite/bullet_dark.png")
 
 var bullets = []
 var shape
 
+onready var game = get_owner()
+
+onready var sprite = $Sprite
 
 class Bullet:
 	var position
@@ -100,6 +108,11 @@ func _physics_process(delta):
 	var transform2d = Transform2D()
 	
 	
+	if game.current_colour == game.light_colour:
+		sprite.texture = moon
+	elif game.current_colour == game.dark_colour:
+		sprite.texture = sun
+	
 	var root_position = get_owner().transform
 	var box_shape: RectangleShape2D = get_node("BulletBounds/CollisionShape2D").get_shape()
 	#var bounds_extents_x: Vector2 = shape.get_extents().x
@@ -154,7 +167,11 @@ func _physics_process(delta):
 func _draw():
 	var offset = -bullet_image.get_size() * 0.5
 	for bullet in bullets:
-		draw_texture(bullet_image, bullet.position + offset)
+		if game.current_colour == game.light_colour:
+			draw_texture(light_bullet, bullet.position + offset)
+			
+		elif game.current_colour == game.dark_colour:
+			draw_texture(dark_bullet, bullet.position + offset)
 
 
 # Perform cleanup operations (required to exit without error messages in the console).
@@ -167,8 +184,5 @@ func _exit_tree():
 
 
 
-
-func _on_timer_timeout():
-	print("fuck")
 
 

@@ -5,7 +5,7 @@ export var rotate_point = Vector2(0,0)
 export var rotate_angle: float
 export var rotation_speed = 120.0
 export var distance_speed = 2.0
-var dist_from_center = 100
+var dist_from_center = 250
 
 
 onready var _animated_sprite = $AnimatedSprite
@@ -37,7 +37,7 @@ func _physics_process(delta):
 	
 	
 	var game = get_owner()
-	print(game.current_colour)
+
 	
 	if self.position.angle() >= 0:
 		if game.current_colour != game.dark_colour:
