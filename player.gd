@@ -6,6 +6,7 @@ export var rotate_angle: float
 export var rotation_speed = 2.0
 var dist_from_center = 100
 
+
 var velocity = Vector2()
  
 var direction
@@ -26,7 +27,7 @@ func _process(delta):
 func _physics_process(delta):
 	
 	var rot = self.rotation
-
+	var rotation_speed_local = rotation_speed
 	if self.position.angle() >= 0 and no_angular_movement():
 		direction = 1
 		#print("normal")
@@ -35,19 +36,20 @@ func _physics_process(delta):
 		direction = -1
 		#print("inverted")
 
-	
+	if Input.is_key_pressed(KEY_SHIFT):
+		rotation_speed_local = rotation_speed/2
 	# TODO: input kinda janky
 	if Input.is_key_pressed(KEY_LEFT):
-		self.position = self.position.rotated(direction * rotation_speed * delta)
+		self.position = self.position.rotated(direction * rotation_speed_local * delta)
 		
 	if Input.is_key_pressed(KEY_RIGHT):
-		self.position = self.position.rotated(-direction * rotation_speed * delta)
+		self.position = self.position.rotated(-direction * rotation_speed_local * delta)
 		
 	if Input.is_key_pressed(KEY_UP):
-		self.position = self.position*1.01
+		self.position = self.position + self.position.normalized()*rotation_speed_local
 		
 	if Input.is_key_pressed(KEY_DOWN):
-		self.position = self.position+ self.position*-0.01
+		self.position = self.position+ self.position.normalized()*-rotation_speed_local
 
 
 	
