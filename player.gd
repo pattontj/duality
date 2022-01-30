@@ -1,9 +1,6 @@
 extends Area2D
 
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 export var rotate_point = Vector2(0,0)
 export var rotate_angle: float
 export var rotation_speed = 2.0
@@ -76,11 +73,11 @@ func no_angular_movement() -> bool:
 
 func _on_Area2D_body_shape_exited(body_rid, body, body_shape_index, local_shape_index):
 	hitting -=1
-	print(hitting)
+	#print(hitting)
 	pass # Replace with function body.
 
 
 func _on_Area2D_body_shape_entered(body_rid, body, body_shape_index, local_shape_index):
 	hitting +=1
-	print(hitting) 
+	#print(hitting) 
 	pass # Replace with function body.

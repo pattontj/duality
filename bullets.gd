@@ -15,6 +15,8 @@ const bullet_image = preload("res://bullet.png")
 var bullets = []
 var shape
 
+var root_position = null
+var bounds_extents = null
 
 class Bullet:
 	var position
@@ -24,12 +26,19 @@ class Bullet:
 	# faster to use RIDs compared to a high-level approach.
 	var body = RID()
 	var angle = 0.0
-	
-	var k_body: KinematicBody2D
-	
+	var timer: Timer
 
 func _ready():
 	randomize()
+	print("camera pos", camera.get_camera_position())
+	print("camera center pos", camera.get_camera_screen_center())
+	print("viewport size:", get_viewport().size)
+
+	
+
+	var screen_coord = get_viewport_transform() * (get_global_transform() * Vector2(100, 0))
+	print(screen_coord)
+
 
 	shape = Physics2DServer.circle_shape_create()
 	# Set the collision shape's radius for each bullet in pixels.
@@ -64,37 +73,85 @@ func _ready():
 		# )
 		#The bullet will be spawned at the center
 		bullet.position = Vector2(0,0)
-
-
+	
 
 		var transform2d = Transform2D()
 		transform2d.origin = bullet.position
 		Physics2DServer.body_set_state(bullet.body, Physics2DServer.BODY_STATE_TRANSFORM, transform2d)
 
 		bullets.push_back(bullet)
+		
 
+		
+		# bullet.connect("area_shape_exited", get_node("BulletBounds"), "on_Area_Shape_Exited")
+		
+	
 
 func _process(_delta):
 	# Order the CanvasItem to update every frame.
 	update()
+	#for bullet in bullets:
+	#	if bullet.timer.is_stopped():
+	#		bullet.position = Vector2(0,0)
+	
+	
 
 
 func _physics_process(delta):
+	
+
+	if root_position == null:
+		root_position = get_owner().transform
+		print(root_position)
+		
+	if bounds_extents == null:
+		var box_shape: RectangleShape2D = get_node("BulletBounds/CollisionShape2D").get_shape()
+		bounds_extents = shape.get_extents()
+	
+	
+	
 	var transform2d = Transform2D()
+	
 	
 	for bullet in bullets:
 		bullet.position.x -= bullet.speed * delta * cos(bullet.angle)
 		bullet.position.y -= bullet.speed * delta * sin(bullet.angle)
 		
-		if bullet.position.x < -camera.get_camera_position().x || bullet.position.x > camera.get_camera_position().x:
-			#Bullet has left screen in X direction, send to center
-			bullet.position = Vector2(0,0)
-		if bullet.position.y < -camera.get_camera_position().y || bullet.position.y > camera.get_camera_position().y:
-			# The bullet has left the screen in Y direction; move it to center
-			bullet.position = Vector2(0,0)
 		transform2d.origin = bullet.position
-
 		Physics2DServer.body_set_state(bullet.body, Physics2DServer.BODY_STATE_TRANSFORM, transform2d)
+	
+
+#		root_position 
+#		bounds_extents
+		
+		if bullet.position.x < root_position.x || bullet.position.x > root_position.x+bounds_extents.x:
+			pass
+		
+		if bullet.position.y < root_position.y || bullet.position.y > root_position.x+bounds_extents.y:
+			pass
+	
+	#	if not get_node("BulletBounds").overlaps_areas(bullet):
+	#		bullet.position = Vector2(0,0)
+		
+		
+		
+		
+#		if bullet.position.x < -camera.get_camera_position().x || bullet.position.x > camera.get_camera_position().x
+			
+		#	Bullet has left screen in X direction, send to center
+#			bullet.position = Vector2(0,0)
+		#if bullet.position.y < -camera.get_camera_position().y
+#			 || bullet.position.y > camera.get_camera_position().y:
+			
+			# The bullet has left the screen in Y direction; move it to center
+#			bullet.position = Vector2(0,0)
+
+		# print("camera position", camera.get_camera_position())
+
+
+		
+
+
 
 
 # Instead of drawing each bullet individually in a script attached to each bullet,
@@ -112,3 +169,11 @@ func _exit_tree():
 
 	Physics2DServer.free_rid(shape)
 	bullets.clear()
+
+
+
+
+func _on_timer_timeout():
+	print("fuck")
+
+
