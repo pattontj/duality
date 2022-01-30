@@ -95,6 +95,9 @@ func no_angular_movement() -> bool:
 
 func _on_Area2D_body_shape_exited(body_rid, body, body_shape_index, local_shape_index):
 	hitting -=1
+	var game = get_owner()
+	game.update_hp(-1)
+	
 	#print(hitting)
 	pass # Replace with function body.
 

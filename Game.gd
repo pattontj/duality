@@ -5,7 +5,7 @@ var dark_colour = Color("#272744")
 var light_colour = Color("#FBF5EF")
 
 var current_colour = light_colour
-
+var hp = 100
 onready var background = $ColorRect
 onready var fade_out  =  $FadeOut
 
@@ -29,7 +29,8 @@ func switch_colours():
 	else:
 		null.test()
 
-
+func update_hp(change):
+	hp = hp + change
 
 func switch_background_colour(current):
 #	background.color = current
