@@ -1,33 +1,40 @@
 extends Node2D
 
 
-var dark_colour = Color(39, 39, 68, 1.0)
-var light_colour = Color(251, 245, 239, 1.0)
+var dark_colour = Color("#272744")
+var light_colour = Color("#FBF5EF")
 
 var current_colour = light_colour
 
-
+onready var background = $ColorRect
 
 func _ready():
-	#VisualServer.set_default_clear_color(light_colour)
-	pass
-
+	background.color = current_colour
 
 
 func switch_colours():
 	if current_colour == light_colour:
 		current_colour = dark_colour
-		# switch all the colour stuff in here
-	else:
+		switch_bullets_colour(current_colour)
+		switch_player_colour(current_colour)
+		switch_background_colour(current_colour)
+	elif current_colour == dark_colour:
 		current_colour = light_colour
-		#and in here
-	switch_background_colour(current_colour)
-	switch_bullets_colour(current_colour)
-	switch_player_colour(current_colour)
+		switch_bullets_colour(current_colour)
+		switch_player_colour(current_colour)
+		switch_background_colour(current_colour)
+
+	else:
+		null.test()
+
 
 
 func switch_background_colour(current):
-	VisualServer.set_default_clear_color(current)
+#	background.color = current
+	if current == light_colour:
+		background.color = dark_colour
+	else:
+		background.color = light_colour
 
 	
 func switch_bullets_colour(current):

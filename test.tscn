@@ -76,6 +76,16 @@ extents = Vector2( 964, 540 )
 position = Vector2( -960, -539 )
 script = ExtResource( 6 )
 
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_left = -38.0
+margin_top = -38.0
+margin_right = 1955.0
+margin_bottom = 1091.0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2( 960, 539 )
 current = true

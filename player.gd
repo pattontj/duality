@@ -37,12 +37,12 @@ func _physics_process(delta):
 	
 	
 	var game = get_owner()
+	print(game.current_colour)
 	
 	if self.position.angle() >= 0:
 		if game.current_colour != game.dark_colour:
-			game.switch_colours();
+			game.switch_colours()
 #		_animated_sprite.play("dark")
-#		VisualServer.set_default_clear_color(Color(1, 1, 1, 1))
 		if no_angular_movement():
 			vert_direction = 1
 		
