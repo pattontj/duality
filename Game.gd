@@ -10,6 +10,8 @@ onready var background = $ColorRect
 onready var fade_out  =  $FadeOut
 onready var hp_label = $Camera2D/RichTextLabel
 
+onready var dialog = Dialogic.start("testConvo")
+
 func _ready():
 	background.color = current_colour
 	fade_out.color = current_colour
@@ -19,6 +21,9 @@ func _ready():
 	hp_label.append_bbcode(str("hp: ", hp))
 	hp_label.pop()
 #	hp_label.set_bbcode("[color=#"+dark_colour.to_html(false)+str("HP: ", hp)+ "[/color]")
+	
+	add_child(dialog)
+
 
 func switch_colours():
 	if current_colour == light_colour:
