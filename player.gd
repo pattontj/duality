@@ -39,7 +39,7 @@ func _physics_process(delta):
 	var game = get_owner()
 
 	
-	if self.position.angle() >= 0:
+	if self.position.angle() >= 0.1 and self.dist_from_center >10:
 		if game.current_colour != game.dark_colour:
 			game.switch_colours()
 #		_animated_sprite.play("dark")
@@ -48,7 +48,7 @@ func _physics_process(delta):
 		
 		#print("normal")
 	
-	if self.position.angle() < 0:
+	if self.position.angle() < -0.1 and self.dist_from_center >10:
 		if game.current_colour != game.light_colour:
 			game.switch_colours()
 		if no_angular_movement():
