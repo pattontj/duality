@@ -60,9 +60,9 @@ func switch_bullets_colour(current):
 	
 func switch_player_colour(current):
 	if current == light_colour:
-		get_node("Camera2D/Area2D")._animated_sprite.play("light")
+		get_node("Camera2D/Player")._animated_sprite.play("light")
 	elif current == dark_colour:
-		get_node("Camera2D/Area2D")._animated_sprite.play("dark")
+		get_node("Camera2D/Player")._animated_sprite.play("dark")
 
 
 func switch_label_colour(current):
