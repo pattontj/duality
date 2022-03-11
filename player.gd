@@ -38,7 +38,6 @@ func _physics_process(delta):
 	
 	var game = get_owner()
 
-	
 	if self.position.angle() >= 0.1 and self.dist_from_center >10:
 		if game.current_colour != game.dark_colour:
 			game.switch_colours()
