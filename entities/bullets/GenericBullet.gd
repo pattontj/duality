@@ -3,8 +3,19 @@ extends Node2D
 # hold my bullets
 var bullets = []
 
-class GenericBullet:
-	var position
+# hold shape type
+# Set the collision shape's radius for each bullet in pixels.
+
+var genericShape
+# Physics2DServer.shape_set_data(genericShape, 8)
+var t = get_world_2d().get_space()
+
+func test():
+	if t == null:
+		print("null")
+
+class GenericBullet extends Node2D:
+#	var position
 	var speed = 1.0
 	# The body is stored as a RID, which is an "opaque" way to access resources.
 	# With large amounts of objects (thousands or more), it can be significantly
@@ -13,23 +24,30 @@ class GenericBullet:
 	var angle = 0.0
 	var timer: Timer
 	
-	func _init(_speed = 1.0, _angle = 0.0):
+
+	static func circle():
+		return Physics2DServer.circle_shape_create()
+	
+	func _init( _speed = 1.0, _angle = 0.0):
 		speed = _speed
 		angle = _angle
+
 		
 		body = Physics2DServer.body_create()
+		#Physics2DServer.body_set_space(body, self.get_world_2d().get_space())
 		
-#		Physics2DServer.body_set_space(body, get_world_2d().get_space())
-#		Physics2DServer.body_add_shape(body, shape)
-#		# Don't make bullets check collision with other bullets to improve performance.
-#		# Their collision mask is still configured to the default value, which allows
-#		# bullets to detect collisions with the player.
-#		Physics2DServer.body_set_collision_layer(body, 0)
-#		Physics2DServer.body_set_collision_mask(body, 1)
+		var shape = circle()
+		Physics2DServer.shape_set_data(shape, 8)
+		Physics2DServer.body_add_shape(body, shape)
+		
+		Physics2DServer.body_set_collision_layer(body, 0)
+		Physics2DServer.body_set_collision_mask(body, 1)
+
 
 
 class TestBullet extends GenericBullet:
 	var p = 2
+	
 
 class BigBullet extends GenericBullet:
 	var p = 4
@@ -43,28 +61,33 @@ class BigBullet extends GenericBullet:
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	print("class types")
-	print(typeof(TestBullet))
-	print(typeof(GenericBullet))
 	
-	var b1 = GenericBullet.new()
-	var b2 = TestBullet.new()
-	var b3 = BigBullet.new()
+
+	# init shapes for bullets HERE:
+	genericShape = Physics2DServer.circle_shape_create()
+	Physics2DServer.shape_set_data(genericShape, 8)
 	
-	# b3._init()
 	
-	print("typeof")
-	print(typeof(b1))
-	print(typeof(b2))
+	var test = spawn_bullet(TestBullet)
+	print(typeof(test))
 	
-	print("speeds")
-	print(b1.speed)
-	print(b2.speed)
-	print(b3.speed)
+	# Physics2DServer.body_add_shape(body, genericShape)
+#	# Don't make bullets check collision with other bullets to improve performance.
+#	# Their collision mask is still configured to the default value, which allows
+#	# bullets to detect collisions with the player.
+#	Physics2DServer.body_set_collision_layer(body, 0)
+#	Physics2DServer.body_set_collision_mask(body, 1)
+
 	
-	print("child class members")
-	print(b2.p)
-	print(b3.p)
+
+
+func spawn_bullet(type):
+	var bullet = type.new()
+	
+	if type is TestBullet:
+		print("works")
+	bullets.push_back(bullet)
+	return bullet
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
@@ -74,10 +97,11 @@ func _ready():
 func bullets_circular_spin(spin_speed, bullet_count):
 	for _i in bullet_count:
 		
-		var bullet = GenericBullet.new()
+		var bullet = GenericBullet.new(self)
 		
 		bullet.angle += spin_speed
 		bullets.push_back(bullet)
+		
 
 """
 bullet.speed = rand_range(SPEED_MIN, SPEED_MAX)
