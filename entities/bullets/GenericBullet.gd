@@ -8,11 +8,10 @@ var bullets = []
 
 var genericShape
 # Physics2DServer.shape_set_data(genericShape, 8)
-var t = get_world_2d().get_space()
 
-func test():
-	if t == null:
-		print("null")
+static func test(canvas: CanvasItem) -> RID:
+	return canvas.get_world_2d().get_space()
+
 
 class GenericBullet extends Node2D:
 #	var position
@@ -24,7 +23,6 @@ class GenericBullet extends Node2D:
 	var angle = 0.0
 	var timer: Timer
 	
-
 	static func circle():
 		return Physics2DServer.circle_shape_create()
 	
@@ -32,9 +30,7 @@ class GenericBullet extends Node2D:
 		speed = _speed
 		angle = _angle
 
-		
 		body = Physics2DServer.body_create()
-		#Physics2DServer.body_set_space(body, self.get_world_2d().get_space())
 		
 		var shape = circle()
 		Physics2DServer.shape_set_data(shape, 8)
@@ -61,31 +57,15 @@ class BigBullet extends GenericBullet:
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	
+	pass
 
-	# init shapes for bullets HERE:
-	genericShape = Physics2DServer.circle_shape_create()
-	Physics2DServer.shape_set_data(genericShape, 8)
-	
-	
-	var test = spawn_bullet(TestBullet)
-	print(typeof(test))
-	
-	# Physics2DServer.body_add_shape(body, genericShape)
-#	# Don't make bullets check collision with other bullets to improve performance.
-#	# Their collision mask is still configured to the default value, which allows
-#	# bullets to detect collisions with the player.
-#	Physics2DServer.body_set_collision_layer(body, 0)
-#	Physics2DServer.body_set_collision_mask(body, 1)
-
-	
 
 
 func spawn_bullet(type):
 	var bullet = type.new()
 	
-	if type is TestBullet:
-		print("works")
+	Physics2DServer.body_set_space(bullet.body, get_world_2d().get_space())
+	
 	bullets.push_back(bullet)
 	return bullet
 
@@ -95,44 +75,56 @@ func spawn_bullet(type):
 
 # Spin the shooting angle in a circle and fire bullets at a given speed
 func bullets_circular_spin(spin_speed, bullet_count):
+	var spin = 0.0
+	
 	for _i in bullet_count:
 		
-		var bullet = GenericBullet.new(self)
+		spin += spin_speed
 		
-		bullet.angle += spin_speed
-		bullets.push_back(bullet)
+		var bullet = spawn_bullet(GenericBullet)
 		
+		bullet.angle = spin
 
-"""
-bullet.speed = rand_range(SPEED_MIN, SPEED_MAX)
 
-		bullet.body = Physics2DServer.body_create()
-		bullet.angle = _i*((2*PI)/BULLET_COUNT)
 
-		Physics2DServer.body_set_space(bullet.body, get_world_2d().get_space())
-		Physics2DServer.body_add_shape(bullet.body, shape)
-		# Don't make bullets check collision with other bullets to improve performance.
-		# Their collision mask is still configured to the default value, which allows
-		# bullets to detect collisions with the player.
-		Physics2DServer.body_set_collision_layer(bullet.body, 0)
-		Physics2DServer.body_set_collision_mask(bullet.body, 1)
-		
-		#camera = get_child()
-		
-		
-		# bullet.position = camera.get_camera_screen_center()
-		# Place bullets randomly on the viewport and move bullets outside the
-		# play area so that they fade in nicely.
-		# bullet.position = Vector2(0 ,0
-			# get_viewport_rect().size.x/2,
-			# get_viewport_rect().size.y/2
-		
-		# )
-		#The bullet will be spawned at the center
-		bullet.position = Vector2(0,0)
+func _physics_process(delta):
+	var transform2d = Transform2D()
 	
-
-		var transform2d = Transform2D()
+	
+	var root_position = get_owner().transform
+	# var box_shape: RectangleShape2D = get_node("BulletBounds/CollisionShape2D").get_shape()
+	#var bounds_extents_x: Vector2 = shape.get_extents().x
+	#var bounds_extents_y: Vector2 = shape.get_extents().y
+	#print(root_position)
+	#print(box_shape.get_extents())
+	
+	for bullet in bullets:
+		bullet.position.x -= bullet.speed * delta * cos(bullet.angle)
+		bullet.position.y -= bullet.speed * delta * sin(bullet.angle)
+		
 		transform2d.origin = bullet.position
 		Physics2DServer.body_set_state(bullet.body, Physics2DServer.BODY_STATE_TRANSFORM, transform2d)
-"""
+	
+
+		if bullet.position.x < -960 || bullet.position.x >  964:
+			bullet.position = Vector2(0, 0)
+		
+		if bullet.position.y < -539 || bullet.position.y >  540:
+			bullet.position = Vector2(0, 0)
+	
+	#	if not get_node("BulletBounds").overlaps_areas(bullet):
+	#		bullet.position = Vector2(0,0)
+		
+
+
+
+func _draw():
+	pass
+	
+# Perform cleanup operations (required to exit without error messages in the console).
+func _exit_tree():
+	for bullet in bullets:
+		Physics2DServer.free_rid(bullet.body)
+
+	# Physics2DServer.free_rid(shape)
+	bullets.clear()
