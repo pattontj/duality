@@ -69,7 +69,7 @@ func _physics_process(delta):
 		start_angle = self.position.angle()
 
 	if Input.is_action_pressed("Up"):
-		print(start_angle)
+		#print(start_angle)
 		if start_angle >= 0:
 			self.position = self.position - self.position.normalized()*distance_speed_local
 		else:
