@@ -19,6 +19,10 @@ const dark_bullet  = preload("res://sprite/bullet_dark.png")
 var genericShape
 # Physics2DServer.shape_set_data(genericShape, 8)
 
+
+onready var spinning_bullets = BulletSpin.new(bullets)
+
+
 static func test(canvas: CanvasItem) -> RID:
 	return canvas.get_world_2d().get_space()
 
@@ -35,6 +39,27 @@ class BigBullet extends GenericBullet:
 
 
 
+class BulletSpin:
+	var spin = 0
+	var spin_speed = 0.2
+	
+	var frame_counter = 0
+	
+	var shoot_speed_modulator = 4
+	
+	func _init(bullets: Array):
+		var test = GenericBullet.new(50)
+		bullets.push_back(test)
+	
+	func shoot(bullets: Array):
+		if frame_counter > shoot_speed_modulator:
+			spin += spin_speed
+			var b = GenericBullet.new(50, spin)
+			bullets.push_back(b)
+			frame_counter = 0
+			
+		frame_counter += 1
+
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -42,7 +67,8 @@ class BigBullet extends GenericBullet:
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	bullets_circular_spin(50.0, 50)
+	var test = BulletSpin.new(bullets)
+	
 
 
 func spawn_bullet(type, time = 0):
@@ -83,8 +109,8 @@ func bullets_circular_spin(spin_speed, bullet_count):
 
 
 
-func _physics_process(delta):
 
+func _physics_process(delta):
 
 	var transform2d = Transform2D()
 	
@@ -95,6 +121,8 @@ func _physics_process(delta):
 	#var bounds_extents_y: Vector2 = shape.get_extents().y
 	#print(root_position)
 	#print(box_shape.get_extents())
+	
+	spinning_bullets.shoot(bullets)
 	
 	for bullet in bullets:
 		
@@ -108,10 +136,16 @@ func _physics_process(delta):
 	
 
 		if bullet.position.x < -960 || bullet.position.x >  964:
-			bullet.position = Vector2(0, 0)
+			#bullet.position = Vector2(0, 0)
+			Physics2DServer.free_rid(bullet.body)
+			bullets.erase(bullet)
+			
 		
 		if bullet.position.y < -539 || bullet.position.y >  540:
-			bullet.position = Vector2(0, 0)
+			#bullet.position = Vector2(0, 0)
+			Physics2DServer.free_rid(bullet.body)
+			bullets.erase(bullet)
+			
 	
 	#	if not get_node("BulletBounds").overlaps_areas(bullet):
 	#		bullet.position = Vector2(0,0)
