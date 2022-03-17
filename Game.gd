@@ -44,6 +44,7 @@ func switch_colours():
 
 func update_hp(change):
 	hp = hp + change
+	hp_label.bbcode_text = str("hp: ", hp)
 
 func switch_background_colour(current):
 #	background.color = current
@@ -75,6 +76,9 @@ func switch_label_colour(current):
 		hp_label.push_color(light_colour)
 		hp_label.pop()
 		#hp_label.set_bbcode("[color=#"+light_colour.to_html(false)+str("HP: ", hp) + "[/color]")
+
+func _draw():
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

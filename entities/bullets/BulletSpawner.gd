@@ -1,5 +1,7 @@
 extends Node2D
 
+class_name BulletSpawner
+
 # hold my bullets
 var bullets = []
 
@@ -20,7 +22,7 @@ var genericShape
 # Physics2DServer.shape_set_data(genericShape, 8)
 
 
-onready var spinning_bullets = BulletSpin.new(bullets)
+onready var spinning_bullets = BulletSpin.new(get_world_2d().get_space())
 
 
 static func test(canvas: CanvasItem) -> RID:
@@ -47,14 +49,17 @@ class BulletSpin:
 	
 	var shoot_speed_modulator = 4
 	
-	func _init(bullets: Array):
-		var test = GenericBullet.new(50)
-		bullets.push_back(test)
+	var space: RID
+	
+	func _init(_space: RID):
+		space = _space
+
 	
 	func shoot(bullets: Array):
 		if frame_counter > shoot_speed_modulator:
 			spin += spin_speed
 			var b = GenericBullet.new(50, spin)
+			Physics2DServer.body_set_space(b.body, space)
 			bullets.push_back(b)
 			frame_counter = 0
 			
@@ -67,9 +72,8 @@ class BulletSpin:
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var test = BulletSpin.new(bullets)
+	pass
 	
-
 
 func spawn_bullet(type, time = 0):
 	
@@ -116,13 +120,15 @@ func _physics_process(delta):
 	
 	
 	var root_position = get_owner().transform
-	var box_shape: RectangleShape2D = get_node("BulletBounds/CollisionShape2D").get_shape()
+	var box_shape: CircleShape2D = get_node("BulletBounds/CollisionShape2D").get_shape()
 	#var bounds_extents_x: Vector2 = shape.get_extents().x
 	#var bounds_extents_y: Vector2 = shape.get_extents().y
 	#print(root_position)
 	#print(box_shape.get_extents())
 	
+	
 	spinning_bullets.shoot(bullets)
+	
 	
 	for bullet in bullets:
 		
