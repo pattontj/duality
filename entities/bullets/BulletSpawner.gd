@@ -23,7 +23,7 @@ var genericShape
 
 
 onready var spinning_bullets = BulletSpin.new(get_world_2d().get_space())
-
+onready var straight_bullets = StraightPattern.new(get_world_2d().get_space(), 100)
 
 static func test(canvas: CanvasItem) -> RID:
 	return canvas.get_world_2d().get_space()
@@ -34,11 +34,31 @@ class TestBullet extends GenericBullet:
 	var p = 2
 	
 
-class BigBullet extends GenericBullet:
-	var p = 4
-	func _init().(5, 5):
-		pass
-
+## TEST code
+class StraightPattern extends Node2D:
+	var space: RID
+	var bullet_count: int
+	
+	var frame_counter = 0
+	var shoot_speed_modulator = 4
+	
+	func _init(_space: RID, _bullet_num: int):
+		space        = _space
+		bullet_count = _bullet_num
+		
+	func shoot(bullets: Array):
+		if bullet_count == 0:
+			queue_free()
+			return
+		
+		if frame_counter > shoot_speed_modulator:
+			var b = GenericBullet.new(150, (3 * PI) /2)
+			Physics2DServer.body_set_space(b.body, space)
+			bullets.push_back(b)
+			frame_counter = 0
+			bullet_count -= 1
+		
+		frame_counter += 1
 
 
 class BulletSpin:
@@ -127,8 +147,11 @@ func _physics_process(delta):
 	#print(box_shape.get_extents())
 	
 	
-	spinning_bullets.shoot(bullets)
-	
+	#spinning_bullets.shoot(bullets)
+	## TEST CODE
+	if is_instance_valid(straight_bullets):
+		straight_bullets.shoot(bullets)
+		
 	
 	for bullet in bullets:
 		
