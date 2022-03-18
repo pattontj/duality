@@ -22,8 +22,9 @@ var genericShape
 # Physics2DServer.shape_set_data(genericShape, 8)
 
 
-onready var spinning_bullets = BulletSpin.new(get_world_2d().get_space())
-onready var straight_bullets = StraightPattern.new(get_world_2d().get_space(), 100)
+onready var spinning_bullets
+onready var straight_bullets 
+# = StraightPattern.new(get_world_2d().get_space(), 100)
 
 static func test(canvas: CanvasItem) -> RID:
 	return canvas.get_world_2d().get_space()
@@ -42,9 +43,12 @@ class StraightPattern extends Node2D:
 	var frame_counter = 0
 	var shoot_speed_modulator = 4
 	
+	signal end_straight_pattern
+	
 	func _init(_space: RID, _bullet_num: int):
 		space        = _space
 		bullet_count = _bullet_num
+		
 		
 	func shoot(bullets: Array):
 		if bullet_count == 0:
@@ -94,6 +98,8 @@ class BulletSpin:
 func _ready():
 	pass
 	
+	# _on_start_straight_pattern
+	
 
 func spawn_bullet(type, time = 0):
 	
@@ -112,10 +118,10 @@ func _process(delta):
 	update()
 
 
-#idea: use coroutines here
-
 # Spin the shooting angle in a circle and fire bullets at a given speed
 func bullets_circular_spin(spin_speed, bullet_count):
+#	yield(get_tree(), "idle_frame")
+
 	var spin = 0.0
 	var i = 0
 	
@@ -130,36 +136,30 @@ func bullets_circular_spin(spin_speed, bullet_count):
 		
 
 
-
-
-
-
 func _physics_process(delta):
 
 	var transform2d = Transform2D()
 	
-	
 	var root_position = get_owner().transform
-	var box_shape: CircleShape2D = get_node("BulletBounds/CollisionShape2D").get_shape()
+	#var box_shape: CircleShape2D = get_node("BulletBounds/CollisionShape2D").get_shape()
 	#var bounds_extents_x: Vector2 = shape.get_extents().x
 	#var bounds_extents_y: Vector2 = shape.get_extents().y
 	#print(root_position)
 	#print(box_shape.get_extents())
 	
-	
 	#spinning_bullets.shoot(bullets)
-	## TEST CODE
+	
+	if is_instance_valid(spinning_bullets):
+		spinning_bullets.shoot(bullets)
+	
 	if is_instance_valid(straight_bullets):
 		straight_bullets.shoot(bullets)
 		
-	
 	for bullet in bullets:
 		
 		bullet.position.x -= bullet.speed * delta * cos(bullet.angle)
 		bullet.position.y -= bullet.speed * delta * sin(bullet.angle)
-		
-		
-		
+			
 		transform2d.origin = bullet.position
 		Physics2DServer.body_set_state(bullet.body, Physics2DServer.BODY_STATE_TRANSFORM, transform2d)
 	
@@ -175,13 +175,9 @@ func _physics_process(delta):
 			Physics2DServer.free_rid(bullet.body)
 			bullets.erase(bullet)
 			
-	
 	#	if not get_node("BulletBounds").overlaps_areas(bullet):
 	#		bullet.position = Vector2(0,0)
 		
-
-
-
 func _draw():
 	var offset = -bullet_image.get_size() * 0.5
 	for bullet in bullets:
@@ -190,7 +186,20 @@ func _draw():
 			
 		elif game.current_colour == game.dark_colour:
 			draw_texture(dark_bullet, bullet.position + offset)
-	
+
+
+
+
+func _on_start_spinning_pattern():
+	if !is_instance_valid(spinning_bullets):
+		spinning_bullets = BulletSpin.new(get_world_2d().get_space())
+
+
+func _on_start_straight_pattern(bullet_amt: int):
+	if !is_instance_valid(straight_bullets):
+		straight_bullets = StraightPattern.new(get_world_2d().get_space(), bullet_amt)
+
+
 # Perform cleanup operations (required to exit without error messages in the console).
 func _exit_tree():
 	for bullet in bullets:

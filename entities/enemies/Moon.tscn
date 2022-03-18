@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://sprite/moon.png" type="Texture" id=1]
+[ext_resource path="res://entities/enemies/Moon.gd" type="Script" id=3]
+
+[node name="Moon" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 1 )

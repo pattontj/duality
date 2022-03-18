@@ -17,6 +17,8 @@ var hitting = 0
 
 #get_viewport().size.x
 
+signal start_spinning_pattern
+signal start_straight_pattern(bullet_amt)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -35,6 +37,9 @@ func _physics_process(delta):
 
 	
 	#VisualServer.set_default_clear_color(Color(0.4,0.4,0.4,1.0))
+#	if Input.is_action_just_pressed("ui_up"):
+#		emit_signal("start_spinning_pattern")
+#		emit_signal("start_straight_pattern", 25)
 	
 	
 	var game = get_owner()
