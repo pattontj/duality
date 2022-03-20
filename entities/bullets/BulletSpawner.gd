@@ -2,11 +2,6 @@ extends Node2D
 
 class_name BulletSpawner
 
-# hold my bullets
-var bullets = []
-
-# hold shape type
-# Set the collision shape's radius for each bullet in pixels.
 
 onready var game = get_owner()
 
@@ -22,20 +17,42 @@ var genericShape
 # Physics2DServer.shape_set_data(genericShape, 8)
 
 
-onready var spinning_bullets
-onready var straight_bullets 
-# = StraightPattern.new(get_world_2d().get_space(), 100)
+# holds bullets for every pattern
+# TODO: consider adding a cap to bullets for performance
+onready var bullets = []
 
-static func test(canvas: CanvasItem) -> RID:
-	return canvas.get_world_2d().get_space()
+# Maximum amount of patterns allowed on the screen at one time
+const MAX_PATTERNS = 2
+onready var active_patterns = []
 
 
-
-class TestBullet extends GenericBullet:
-	var p = 2
+# For architecture testing purposes, consider deleting if not needed anymore
+class TestPattern:
+	var space: RID
+	var bullet_count: int
 	
+	var frame_counter = 0
+	var shoot_speed_modulator = 4
+	
+	func _init(_space: RID, _bullet_num: int = 0):
+		space        = _space
+		bullet_count = _bullet_num
+		
+		
+	func setup(_count: int):
+		bullet_count = _count
+		
+	func shoot(bullets: Array):
 
-## TEST code
+		if frame_counter > shoot_speed_modulator && bullet_count > 0:
+			var b = GenericBullet.new(150, (3 * PI) /2)
+			Physics2DServer.body_set_space(b.body, space)
+			bullets.push_back(b)
+			frame_counter = 0
+			bullet_count -= 1
+		
+		frame_counter += 1
+
 class StraightPattern extends Node2D:
 	var space: RID
 	var bullet_count: int
@@ -52,6 +69,7 @@ class StraightPattern extends Node2D:
 		
 	func shoot(bullets: Array):
 		if bullet_count == 0:
+			print("free straight pattern")
 			queue_free()
 			return
 		
@@ -64,8 +82,7 @@ class StraightPattern extends Node2D:
 		
 		frame_counter += 1
 
-
-class BulletSpin:
+class SpinPattern:
 	var spin = 0
 	var spin_speed = 0.2
 	
@@ -89,51 +106,15 @@ class BulletSpin:
 			
 		frame_counter += 1
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
 	
-	# _on_start_straight_pattern
-	
-
-func spawn_bullet(type, time = 0):
-	
-	if type is TimedBullet:
-		var bullet = type.new(time)
-	
-	var bullet = type.new()
-	
-	Physics2DServer.body_set_space(bullet.body, get_world_2d().get_space())
-	
-	bullets.push_back(bullet)
-	return bullet
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	update()
-
-
-# Spin the shooting angle in a circle and fire bullets at a given speed
-func bullets_circular_spin(spin_speed, bullet_count):
-#	yield(get_tree(), "idle_frame")
-
-	var spin = 0.0
-	var i = 0
-	
-	for _i in bullet_count:
-		
-		spin += spin_speed
-		i = i+1
-		
-		#var bullet = TimedBullet.new(50, spin, i)
-		var bullet = spawn_bullet(GenericBullet)
-		bullet.angle = spin
-		
 
 
 func _physics_process(delta):
@@ -149,12 +130,24 @@ func _physics_process(delta):
 	
 	#spinning_bullets.shoot(bullets)
 	
-	if is_instance_valid(spinning_bullets):
-		spinning_bullets.shoot(bullets)
+#	if is_instance_valid(spinning_bullets):
+#		spinning_bullets.shoot(bullets)
 	
-	if is_instance_valid(straight_bullets):
-		straight_bullets.shoot(bullets)
+#	if is_instance_valid(straight_bullets):
+#		straight_bullets.shoot(bullets)
 		
+	
+	# call shoot on all active patterns
+	for pattern in active_patterns:
+		if is_instance_valid(pattern):
+			pattern.shoot(bullets)
+		
+		#if the pattern object has deleted itself, remove it from active patterns
+		elif !is_instance_valid(pattern):
+			active_patterns.erase(pattern)
+
+		
+	# Runs physics on all bullets
 	for bullet in bullets:
 		
 		bullet.position.x -= bullet.speed * delta * cos(bullet.angle)
@@ -177,7 +170,8 @@ func _physics_process(delta):
 			
 	#	if not get_node("BulletBounds").overlaps_areas(bullet):
 	#		bullet.position = Vector2(0,0)
-		
+
+
 func _draw():
 	var offset = -bullet_image.get_size() * 0.5
 	for bullet in bullets:
@@ -188,16 +182,24 @@ func _draw():
 			draw_texture(dark_bullet, bullet.position + offset)
 
 
+## BULLET SPAWNING FUNCTIONS
+
+func start_spinning_pattern() -> SpinPattern:
+	if active_patterns.size() < MAX_PATTERNS:
+		var ret = SpinPattern.new(get_world_2d().get_space())
+		active_patterns.push_back(ret)
+		return ret
+	else:
+		return null
 
 
-func _on_start_spinning_pattern():
-	if !is_instance_valid(spinning_bullets):
-		spinning_bullets = BulletSpin.new(get_world_2d().get_space())
-
-
-func _on_start_straight_pattern(bullet_amt: int):
-	if !is_instance_valid(straight_bullets):
-		straight_bullets = StraightPattern.new(get_world_2d().get_space(), bullet_amt)
+func start_straight_pattern(bullet_amt: int) -> StraightPattern:
+	if active_patterns.size() < MAX_PATTERNS:
+		var ret = StraightPattern.new(get_world_2d().get_space(), bullet_amt)
+		active_patterns.push_back(ret)
+		return ret
+	else:
+		return null
 
 
 # Perform cleanup operations (required to exit without error messages in the console).

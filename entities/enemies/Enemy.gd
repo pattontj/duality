@@ -6,7 +6,10 @@ export var hp: int
 
 signal start_straight_pattern(bullet_amt)
 signal start_spinning_pattern
+signal start_test_pattern
+
 signal end_straight_pattern
+signal finished_test_pattern
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
